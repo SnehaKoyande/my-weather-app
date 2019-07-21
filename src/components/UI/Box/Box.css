@@ -1,0 +1,27 @@
+.Box{
+    height: 120px;
+    width: 120px;
+    border: 1px solid black;
+    margin: 5px;
+    float: left;
+    display: inline-block;
+    align-content: center;
+    font-size: 15px;
+    
+    
+}
+
+.Box:hover {
+    background-color: rgb(196, 250, 245)
+}
+
+.Date{
+    margin: 5px 0px;
+}
+
+
+
+.MinMax{
+    font-size: 12px;
+    margin:7px 0px 0px 0px;
+}
