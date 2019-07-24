@@ -5,3 +5,8 @@
 .Cards{
   display: inline-block;
 }
+
+.Form{
+  display: inline-block;
+  margin: 55px;
+}

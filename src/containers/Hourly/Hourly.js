@@ -43,13 +43,18 @@ class Hourly extends Component {
             weather: "sun-shower"
         }
     ]};
+
+    componentWillMount(){
+        console.log(this.props.match.params.date)
+        //console.log("componentWillMount")
+    }
         
 
     render() {
         return(
             <div className = {classes.TableDiv}>
                 <div className = {classes.H1}>
-                <h1> Hourly weather prediction</h1>
+                <h3> Hourly weather prediction for {this.props.match.params.date}</h3>
                 </div>
                 <Table striped bordered hover variant="dark">
                     <thead>

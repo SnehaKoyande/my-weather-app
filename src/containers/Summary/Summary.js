@@ -1,8 +1,9 @@
 import React, { Component, Fragment} from 'react';
-import {Redirect} from 'react-router-dom';
+
 
 import classes from './Summary.css';
 import Box from '../../components/UI/Box/Box'; 
+import axios from '../../axios-instance';
 
 
 class Summary extends Component {
@@ -44,43 +45,91 @@ class Summary extends Component {
       max: 28,
       weather: "rainy"
     },
-  ],
-  redirect: false};
-
-  setRedirect = (day) => {
-    this.setState({
-      redirect: true
-    })
+    ],
+    responseReceived : false,
+    city: "",
+    country: ""
+    
   };
 
-  renderRedirect = (day) => {
-    console.log("inside render redirect")
-    if (this.state.redirect) {
-      const encodedURI = encodeURI(day.date)
-      return <Redirect to={'/'+encodedURI} />
-    }
+
+  onClickHandler = (day) => {
+    //this.setState({clickedDate : day.date})
+    axios.get('/forecast?q=Washington,US&APPID=f63bf5e46ecfbbd1cf2c288c06501828')
+      .then(res => {
+        console.log((res.data.list[0].main.temp_min-273.15).toFixed(1))
+        const encodedURI = encodeURI(day.date)
+        this.props.history.push('/hourly/'+encodedURI)
+      })
+    
+      
   };
+
+  cityChangeHandler = (event) => {
+    this.setState({city: event.target.value})
+  };
+
+  countryChangeHandler = (event) => {
+    this.setState({country: event.target.value})
+  }
+
+  onSubmitHandler = (event) => {
+    axios.get('/weather?q='+this.state.city+','+this.state.country+'&APPID=f63bf5e46ecfbbd1cf2c288c06501828')
+      .then(res => {
+        console.log(res.data)
+        this.setState({responseReceived:true})
+      })
+    event.preventDefault()
+  }
 
   render() {
-    return (
-      <Fragment>
-        <div className={classes.Summary}
-          onClick = {this.onWeatherHandler}>
-          <h1>Weather</h1>
-          <div className={classes.Cards}>
-            { 
-              this.state.days.map((day, index) => {
-                this.renderRedirect(day)
-                //console.log(day.date)
-                return(
-                  <Box 
+
+    let summaryBoxes = null;
+    if (this.state.responseReceived){
+      summaryBoxes = (
+        <div className={classes.Cards}>
+          { 
+            this.state.days.map((day, index) => {
+              return(
+                <Box 
                   key={index}
                   day = {day}
-                  clicked = {this.setRedirect}
-                  />)
-              } )
-            }
-          </div>
+                  clicked = {() => this.onClickHandler(day)}/>
+              )
+            })
+          }
+        </div>
+      )
+    }
+
+    return (
+      <Fragment>
+        <div className={classes.Summary}>
+          <h1>Weather</h1>
+          <form onSubmit={this.onSubmitHandler} className={classes.Form}>
+            <label>
+              City:
+              <input 
+                type="text" 
+                placeholder = "Enter City"
+                value={this.state.city} 
+                onChange={this.cityChangeHandler} />
+            </label>
+            <br/>
+            <label>
+              Country:
+              <input 
+                type="text" 
+                placeholder = "Enter Country"
+                value={this.state.country} 
+                onChange={this.countryChangeHandler} />
+            </label>
+            <br/>
+            <input 
+              type="submit" value="Submit" />
+          </form>
+          <br/>
+          {summaryBoxes}
         </div>
       </Fragment>
     );

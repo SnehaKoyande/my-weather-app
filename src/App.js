@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <div>
         <Switch>
-          <Route path='/:day' component={Hourly} />
+          <Route path='/hourly/:date' component={Hourly} />
           <Route path='/' exact component={Summary} />
         </Switch>
         
